@@ -1,0 +1,7 @@
+fonttools==4.53.0
+langcodes==3.4.0
+matplotlib==3.9.0
+pyfiglet==1.0.2
+loguru==0.7.2
+rich==13.7.1
+click==8.1.7
