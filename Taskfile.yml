@@ -1,0 +1,99 @@
+version: '3'
+
+vars:
+  IMAGE: toshy/mkvrestyle
+
+env:
+  UID:
+    sh: id -u
+  GID:
+    sh: id -g
+  DOCKER_COMPOSE_RUN: docker compose --progress quiet run --rm --build
+
+tasks:
+  default:
+    cmds:
+      - task --list
+
+  # Docker
+  build:
+    desc: Build local images
+    vars:
+      TARGETS: [ 'dev', 'prod' ]
+    cmds:
+      - for:
+          var: TARGETS
+        cmd: docker buildx build --target {{.ITEM}} --tag {{.IMAGE}}:{{.ITEM}} .
+
+  down:
+    desc: Down service
+    cmds:
+      - docker compose down --remove-orphans
+
+  # Shell
+  shell:dev:
+    desc: Container shell
+    vars:
+      TARGET: 'dev'
+    cmds:
+      - $DOCKER_COMPOSE_RUN {{.TARGET}} {{.CLI_ARGS | default "/bin/bash"}}
+
+  shell:prod:
+    desc: Container shell prod
+    vars:
+      TARGET: 'prod'
+      INPUT_DIRECTORY: '{{.i | default "input"}}'
+      OUTPUT_DIRECTORY: '{{.o | default "output"}}'
+    cmds:
+      - docker buildx build --quiet --target {{.TARGET}} --tag {{.IMAGE}}:{{.TARGET}} .
+      - docker run -it -u $(id -u):$(id -g) -v $(pwd)/{{.INPUT_DIRECTORY}}:/app/input -v $(pwd)/{{.OUTPUT_DIRECTORY}}:/app/output --entrypoint="/bin/bash" --rm {{.IMAGE}}:{{.TARGET}} {{.CLI_ARGS}}
+
+  # Test
+  dev:
+    desc: Test dev image (compose)
+    vars:
+      TARGET: 'dev'
+      INPUT_DIRECTORY: '{{.i | default "input"}}'
+      OUTPUT_DIRECTORY: '{{.o | default "output"}}'
+    cmds:
+      - mkdir -p $(pwd)/{{.INPUT_DIRECTORY}} $(pwd)/{{.OUTPUT_DIRECTORY}}
+      - $DOCKER_COMPOSE_RUN -u $(id -u):$(id -g) {{.TARGET}} python -m mkvrestyle {{.CLI_ARGS | default "--help"}}
+
+  prod:
+    desc: Test prod image (docker)
+    silent: true
+    vars:
+      TARGET: 'prod'
+      INPUT_DIRECTORY: '{{.i | default "input"}}'
+      OUTPUT_DIRECTORY: '{{.o | default "output"}}'
+      FONTS_DIRECTORY: '{{.o | default "fonts"}}'
+    cmds:
+      - docker buildx build --quiet --target {{.TARGET}} --tag {{.IMAGE}}:{{.TARGET}} .
+      - mkdir -p $(pwd)/{{.INPUT_DIRECTORY}} $(pwd)/{{.OUTPUT_DIRECTORY}} $(pwd)/{{.FONTS_DIRECTORY}}
+      - docker run -it -u $(id -u):$(id -g) -v $(pwd)/{{.INPUT_DIRECTORY}}:/app/input -v $(pwd)/{{.OUTPUT_DIRECTORY}}:/app/output -v $(pwd)/{{.FONTS_DIRECTORY}}:/usr/local/share/fonts --rm {{.IMAGE}}:{{.TARGET}} {{.CLI_ARGS | default "--help"}}
+
+  # Development tools
+  ruff:
+    desc: Run ruff
+    cmds:
+      - $DOCKER_COMPOSE_RUN dev ruff check .
+
+  ruff:fix:
+    desc: Run ruff fix
+    cmds:
+      - $DOCKER_COMPOSE_RUN dev ruff check --fix .
+
+  black:
+    desc: Run black
+    cmds:
+      - $DOCKER_COMPOSE_RUN dev black . --check --diff --color
+
+  black:fix:
+    desc: Run black fix
+    cmds:
+      - $DOCKER_COMPOSE_RUN dev black .
+
+  mypy:
+    desc: Run mypy
+    cmds:
+      - $DOCKER_COMPOSE_RUN dev mypy .
