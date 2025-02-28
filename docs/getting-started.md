@@ -4,7 +4,7 @@
 
 ## Pull image
 
-```shell
+```sh
 docker pull ghcr.io/toshy/mkvrestyle:latest
 ```
 
@@ -14,7 +14,7 @@ docker pull ghcr.io/toshy/mkvrestyle:latest
 
 Run with `docker`.
 
-```shell
+```sh
 docker run -it --rm \
   -u $(id -u):$(id -g) \
   -v ${PWD}/input:/app/input \
@@ -37,7 +37,7 @@ services:
 
 Run with `docker compose`.
 
-```shell
+```sh
 docker compose run -u $(id -u):$(id -g) --rm mkvrestyle -h
 ```
 

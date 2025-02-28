@@ -4,7 +4,7 @@
 
 Add your files to the input directory of the mounted container.
 
-```shell
+```sh
 docker run -it --rm \
   -u $(id -u):$(id -g) \
   -v ${PWD}/input:/app/input \
@@ -19,7 +19,7 @@ directory. If no presets are provided, it will automatically use the [`preset/de
 
 Restyling subtitles for a specific file and writing output to `/app/output` (default).
 
-```shell
+```sh
 docker run -it --rm \
   -u $(id -u):$(id -g) \
   -v ${PWD}/input:/app/input \
@@ -32,7 +32,7 @@ docker run -it --rm \
 
 Restyling subtitles for a specific file and writing output to `/app/output/hits`.
 
-```shell
+```sh
 docker run -it --rm \
   -u $(id -u):$(id -g) \
   -v ${PWD}/input:/app/input \
@@ -46,7 +46,7 @@ docker run -it --rm \
 
 Restyling subtitles for a files in specific subdirectory and writing output to `/app/output/hits`.
 
-```shell
+```sh
 docker run -it --rm \
   -u $(id -u):$(id -g) \
   -v ${PWD}/input:/app/input \
@@ -60,7 +60,7 @@ docker run -it --rm \
 
 Restyling subtitles for files in multiple input subdirectories and writing output to `/app/output` (default).
 
-```shell
+```sh
 docker run -it --rm \
   -u $(id -u):$(id -g) \
   -v ${PWD}/input:/app/input \
@@ -78,7 +78,7 @@ docker run -it --rm \
 Restyling subtitles for files in multiple input subdirectories and writing output to specific output subdirectories
 respectively.
 
-```shell
+```sh
 docker run -it --rm \
   -u $(id -u):$(id -g) \
   -v ${PWD}/input:/app/input \
@@ -101,7 +101,7 @@ docker run -it --rm \
 Restyling subtitles for files in multiple input subdirectories, with single video and audio preset, and writing output
 to specific output subdirectories respectively.
 
-```shell
+```sh
 docker run -it --rm \
   -u $(id -u):$(id -g) \
   -v ${PWD}/input:/app/input \
@@ -125,7 +125,7 @@ docker run -it --rm \
 Restyling subtitles for files in multiple input subdirectories, with different presets, and writing output to specific
 output subdirectories respectively.
 
-```shell
+```sh
 docker run -it --rm \
   -u $(id -u):$(id -g) \
   -v ${PWD}/input:/app/input \

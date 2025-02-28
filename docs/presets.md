@@ -7,7 +7,7 @@ can add your custom presets by mounting files to the `/app/preset` directory.
 
 ### 🐋 Docker
 
-```shell
+```sh
 docker run -it --rm \
   -u $(id -u):$(id -g) \
   -v ${PWD}/input:/app/input \
