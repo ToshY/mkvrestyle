@@ -23,7 +23,7 @@ tasks:
     cmds:
       - for:
           var: TARGETS
-        cmd: docker buildx build --target {{.ITEM}} --tag {{.IMAGE}}:{{.ITEM}} .
+        cmd: docker buildx build --load --target {{.ITEM}} --tag {{.IMAGE}}:{{.ITEM}} .
 
   down:
     desc: Down service
@@ -45,7 +45,7 @@ tasks:
       INPUT_DIRECTORY: '{{.i | default "input"}}'
       OUTPUT_DIRECTORY: '{{.o | default "output"}}'
     cmds:
-      - docker buildx build --quiet --target {{.TARGET}} --tag {{.IMAGE}}:{{.TARGET}} .
+      - docker buildx build --quiet --load --target {{.TARGET}} --tag {{.IMAGE}}:{{.TARGET}} .
       - docker run -it -u $(id -u):$(id -g) -v ${PWD}/{{.INPUT_DIRECTORY}}:/app/input -v ${PWD}/{{.OUTPUT_DIRECTORY}}:/app/output --entrypoint="/bin/bash" --rm {{.IMAGE}}:{{.TARGET}} {{.CLI_ARGS}}
 
   # Test
@@ -68,7 +68,7 @@ tasks:
       OUTPUT_DIRECTORY: '{{.o | default "output"}}'
       FONTS_DIRECTORY: '{{.o | default "fonts"}}'
     cmds:
-      - docker buildx build --quiet --target {{.TARGET}} --tag {{.IMAGE}}:{{.TARGET}} .
+      - docker buildx build --quiet --load --target {{.TARGET}} --tag {{.IMAGE}}:{{.TARGET}} .
       - mkdir -p ${PWD}/{{.INPUT_DIRECTORY}} ${PWD}/{{.OUTPUT_DIRECTORY}} ${PWD}/{{.FONTS_DIRECTORY}}
       - docker run -it -u $(id -u):$(id -g) -v ${PWD}/{{.INPUT_DIRECTORY}}:/app/input -v ${PWD}/{{.OUTPUT_DIRECTORY}}:/app/output -v ${PWD}/{{.FONTS_DIRECTORY}}:/usr/local/share/fonts --rm {{.IMAGE}}:{{.TARGET}} {{.CLI_ARGS}}
 
